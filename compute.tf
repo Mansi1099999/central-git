@@ -20,20 +20,24 @@ resource "google_compute_subnetwork" "subnet"{
     }
         }
     depends_on = [google_compute_subnetwork.subnet]
-    #name = "my-vm${count.index}" 
-    # for_each = tomap({
-    #   "vm-1" = "e2-micro"
-    #   "vm-2" = "e2-micro"
+     for_each = tomap({
+       "vm-1" = "e2-micro"
+       "vm-2" = "e2-micro"
+       "vm-3" = "e2-micro"
 
-    # })
-    count  = var.region == "us-east1" ? 1 : 0 #conditional statement to creat evm only if region is us-central1
-    machine_type = var.machine_type
-    name = "vm"
+    })
+    #count  = var.region == "us-east1" ? 1 : 0 #conditional statement to creat evm only if region is us-central1
+    
+     name         = each.key
+  machine_type = each.value
+  zone         = var.zone
+
+    tags = [var.tags]
     metadata = {
     enable-oslogin = "TRUE"
     startup-script = file("${path.module}/install_nginx.sh")
-  }
-    zone = var.zone
+    }
+    
     
     boot_disk {
     initialize_params {
@@ -44,3 +48,5 @@ resource "google_compute_subnetwork" "subnet"{
     }
   }
     }
+
+    
