@@ -28,7 +28,8 @@ resource "google_compute_subnetwork" "subnet"{
     # })
     count  = var.region == "us-east1" ? 1 : 0 #conditional statement to creat evm only if region is us-central1
     machine_type = var.machine_type
-    name = "vm"
+    name = "vm-dev"
+    tags = [var.tags]
     metadata = {
     enable-oslogin = "TRUE"
     startup-script = file("${path.module}/install_nginx.sh")
